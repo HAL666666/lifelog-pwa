@@ -1,0 +1,7 @@
+screenshots/
+.DS_Store
+*.pyc
+__pycache__/
+node_modules/
+.venv/
+test_e2e.py

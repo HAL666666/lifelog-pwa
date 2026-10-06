@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ライフログ">
+  <meta name="description" content="写真・メモ・リマインダー・ポモドーロのローカルライフログ">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/styles.css">
+  <title>ライフログ</title>
+</head>
+<body>
+  <header class="app-header">
+    <h1 id="header-title">ライフログ</h1>
+    <button type="button" class="icon-btn" id="btn-settings" aria-label="設定">⚙</button>
+  </header>
+
+  <main id="main">
+    <!-- Calendar View -->
+    <section id="view-calendar" class="view active">
+      <div class="cal-nav">
+        <button type="button" class="icon-btn" id="cal-prev" aria-label="前月">‹</button>
+        <h2 id="cal-month-label"></h2>
+        <button type="button" class="icon-btn" id="cal-next" aria-label="翌月">›</button>
+      </div>
+      <div class="cal-weekdays" aria-hidden="true">
+        <span>日</span><span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span>土</span>
+      </div>
+      <div id="cal-grid" class="cal-grid" role="grid"></div>
+      <div class="fab-row">
+        <label class="fab" title="写真を追加">
+          📷
+          <input type="file" id="photo-input" accept="image/*" multiple hidden>
+        </label>
+        <label class="fab fab-secondary" title="カメラで撮影">
+          📸
+          <input type="file" id="photo-capture" accept="image/*" capture="environment" hidden>
+        </label>
+      </div>
+    </section>
+
+    <!-- Day View -->
+    <section id="view-day" class="view">
+      <div class="day-toolbar">
+        <button type="button" class="btn-text" id="day-back">← カレンダー</button>
+        <h2 id="day-label"></h2>
+      </div>
+      <div class="day-section">
+        <h3>写真</h3>
+        <div id="day-photos" class="photo-grid"></div>
+        <p id="day-photos-empty" class="empty-hint">写真はありません</p>
+      </div>
+      <div class="day-section">
+        <div class="section-head">
+          <h3>メモ</h3>
+          <button type="button" class="btn-sm" id="memo-add">＋ 追加</button>
+        </div>
+        <ul id="day-memos" class="memo-list"></ul>
+        <p id="day-memos-empty" class="empty-hint">メモはありません</p>
+      </div>
+      <div class="day-section">
+        <div class="section-head">
+          <h3>リマインダー</h3>
+          <button type="button" class="btn-sm" id="reminder-add-day">＋ 追加</button>
+        </div>
+        <ul id="day-reminders" class="reminder-list"></ul>
+        <p id="day-reminders-empty" class="empty-hint">リマインダーはありません</p>
+      </div>
+    </section>
+
+    <!-- Reminders View -->
+    <section id="view-reminders" class="view">
+      <div class="section-head pad">
+        <h2>これから</h2>
+        <button type="button" class="btn-sm" id="reminder-add">＋ 追加</button>
+      </div>
+      <ul id="upcoming-reminders" class="reminder-list pad"></ul>
+      <p id="upcoming-empty" class="empty-hint pad">予定のリマインダーはありません</p>
+      <h3 class="pad sub">過去・完了</h3>
+      <ul id="past-reminders" class="reminder-list pad muted"></ul>
+    </section>
+
+    <!-- Pomodoro View -->
+    <section id="view-pomodoro" class="view">
+      <div class="pomo-display">
+        <div id="pomo-mode" class="pomo-mode">作業</div>
+        <div id="pomo-time" class="pomo-time">25:00</div>
+        <div class="pomo-controls">
+          <button type="button" class="btn-primary" id="pomo-start">スタート</button>
+          <button type="button" class="btn-secondary" id="pomo-pause" hidden>一時停止</button>
+          <button type="button" class="btn-secondary" id="pomo-reset">リセット</button>
+        </div>
+        <label class="toggle-row">
+          <input type="checkbox" id="pomo-wakelock">
+          <span>画面を消さない（Wake Lock）</span>
+        </label>
+        <div class="pomo-settings">
+          <label>作業（分）<input type="number" id="pomo-work" min="1" max="120" value="25"></label>
+          <label>休憩（分）<input type="number" id="pomo-break" min="1" max="60" value="5"></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Settings View -->
+    <section id="view-settings" class="view">
+      <h2 class="pad">設定・ヘルプ</h2>
+      <div class="settings-block">
+        <h3>通知</h3>
+        <button type="button" class="btn-primary full" id="btn-notif-perm">通知を許可する</button>
+        <p class="help-text" id="notif-status"></p>
+        <p class="help-text warn">
+          【重要】iPhone では「ホーム画面に追加」したアプリから、かつ iOS 16.4 以降でのみ Web 通知が使えます。
+          v1 ではサーバープッシュがないため、<strong>アプリを開いている間のみ</strong>リマインダー通知が届きます。
+          バックグラウンドでは通知されません。起動時に期限切れもチェックします。
+        </p>
+      </div>
+      <div class="settings-block">
+        <h3>データのエクスポート / インポート</h3>
+        <label class="toggle-row">
+          <input type="checkbox" id="export-photos">
+          <span>写真も含める（容量に注意）</span>
+        </label>
+        <button type="button" class="btn-primary full" id="btn-export">JSONエクスポート</button>
+        <label class="btn-secondary full file-label">
+          JSONインポート
+          <input type="file" id="import-input" accept="application/json,.json" hidden>
+        </label>
+        <p class="help-text">メモ・リマインダーは常に含まれます。写真は Base64 のため巨大になりやすいです。</p>
+      </div>
+      <div class="settings-block">
+        <h3>ホーム画面に追加</h3>
+        <p class="help-text">
+          <strong>iPhone (Safari):</strong> 共有ボタン →「ホーム画面に追加」<br>
+          <strong>Android (Chrome):</strong> メニュー →「アプリをインストール」または「ホーム画面に追加」
+        </p>
+      </div>
+      <div class="settings-block">
+        <h3>このアプリについて</h3>
+        <p class="help-text">
+          ライフログ v1 — 写真・メモ・リマインダー・ポモドーロ。<br>
+          データはすべて端末内（IndexedDB）に保存されます。ログイン不要。
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tab-bar" role="tablist">
+    <button type="button" class="tab active" data-view="calendar" aria-label="カレンダー">📅<span>カレンダー</span></button>
+    <button type="button" class="tab" data-view="reminders" aria-label="リマインダー">🔔<span>リマインダー</span></button>
+    <button type="button" class="tab" data-view="pomodoro" aria-label="ポモドーロ">⏱<span>ポモドーロ</span></button>
+    <button type="button" class="tab" data-view="settings" aria-label="設定">⚙<span>設定</span></button>
+  </nav>
+
+  <!-- Modal: memo -->
+  <dialog id="modal-memo">
+    <form method="dialog" id="form-memo">
+      <h3 id="memo-modal-title">メモ</h3>
+      <textarea id="memo-text" rows="4" placeholder="メモを入力…" required maxlength="2000"></textarea>
+      <div class="dialog-actions">
+        <button type="button" class="btn-secondary" id="memo-cancel">キャンセル</button>
+        <button type="submit" class="btn-primary">保存</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Modal: reminder -->
+  <dialog id="modal-reminder">
+    <form method="dialog" id="form-reminder">
+      <h3>リマインダー</h3>
+      <label>タイトル<input type="text" id="reminder-title" required maxlength="200"></label>
+      <label>日時<input type="datetime-local" id="reminder-when" required></label>
+      <div class="dialog-actions">
+        <button type="button" class="btn-secondary" id="reminder-cancel">キャンセル</button>
+        <button type="submit" class="btn-primary">保存</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Lightbox -->
+  <dialog id="lightbox">
+    <button type="button" class="lightbox-close" id="lightbox-close" aria-label="閉じる">×</button>
+    <img id="lightbox-img" alt="拡大写真">
+  </dialog>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="js/exif.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/photos.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/memos.js"></script>
+  <script src="js/reminders.js"></script>
+  <script src="js/pomodoro.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
