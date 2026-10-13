@@ -189,6 +189,17 @@
     </section>
 
     <!-- Settings View -->
+    <section id="view-habits" class="view">
+      <div class="section-head pad">
+        <h2>今日の習慣 <small id="habit-progress" class="muted"></small></h2>
+        <span><button type="button" class="btn-sm" id="habit-badges">🏆</button> <button type="button" class="btn-sm" id="habit-add">＋ 追加</button></span>
+      </div>
+      <div class="habit-progress pad"><div id="habit-bar"></div></div>
+      <ul id="habit-list" class="habit-list pad"></ul>
+      <p id="habit-empty" class="empty-hint pad">「＋ 追加」で習慣を作りましょう</p>
+      <div id="badge-panel" class="pad" hidden><h3 class="sub">バッジコレクション <small id="badge-count" class="muted"></small></h3><ul id="badge-grid" class="badge-grid"></ul></div>
+    </section>
+
     <section id="view-settings" class="view">
       <h2 class="pad">設定・ヘルプ</h2>
       <div class="settings-block">
@@ -251,7 +262,7 @@
     <button type="button" class="tab" data-view="notebook" aria-label="ノート">📓<span>ノート</span></button>
     <button type="button" class="tab" data-view="reminders" aria-label="リマインダー">🔔<span>リマインダー</span></button>
     <button type="button" class="tab" data-view="pomodoro" aria-label="ポモドーロ">⏱<span>ポモドーロ</span></button>
-    <button type="button" class="tab" data-view="settings" aria-label="設定">⚙<span>設定</span></button>
+    <button type="button" class="tab" data-view="habits" aria-label="習慣">✅<span>習慣</span></button>
   </nav>
 
   <!-- Modal: memo -->
@@ -309,6 +320,19 @@
 
   <div id="toast" class="toast" hidden></div>
 
+  <dialog id="modal-habit">
+    <form id="habit-form" method="dialog">
+      <h3>習慣</h3>
+      <label>名前 <input id="habit-name" required maxlength="40"></label>
+      <label>絵文字 <input id="habit-emoji" maxlength="4" placeholder="💧"></label>
+      <label>週の目標日数（任意） <input id="habit-target" type="number" min="1" max="7" inputmode="numeric"></label>
+      <div class="dialog-actions">
+        <button type="button" class="btn-danger" id="habit-delete">削除</button>
+        <button type="button" class="btn-secondary" id="habit-cancel">キャンセル</button>
+        <button type="submit" class="btn-primary" id="habit-save">保存</button>
+      </div>
+    </form>
+  </dialog>
   <script src="js/exif.js"></script>
   <script src="js/db.js"></script>
   <script src="js/photos.js"></script>
@@ -319,6 +343,7 @@
   <script src="js/memos.js"></script>
   <script src="js/reminders.js"></script>
   <script src="js/pomodoro.js"></script>
+  <script src="js/habits.js"></script>
   <script src="js/backup.js"></script>
   <script src="js/app.js"></script>
 </body>

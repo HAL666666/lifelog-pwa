@@ -31,7 +31,8 @@
         pomodoro: 'view-pomodoro',
         settings: 'view-settings',
         gantt: 'view-gantt',
-        notebook: 'view-notebook'
+        notebook: 'view-notebook',
+        habits: 'view-habits'
       };
       const id = map[name] || map.calendar;
       document.getElementById(id).classList.add('active');
@@ -45,7 +46,8 @@
         pomodoro: 'ポモドーロ',
         settings: '設定',
         gantt: '予定ガント',
-        notebook: '写真ノート'
+        notebook: '写真ノート',
+        habits: '習慣'
       };
       document.getElementById('header-title').textContent = titles[name] || 'ライフログ';
       if (name === 'reminders') Reminders.renderUpcoming();
@@ -54,6 +56,7 @@
       if (name === 'calendar') Calendar.render();
       if (name === 'gantt') Gantt.render();
       if (name === 'notebook') Notebook.render();
+      if (name === 'habits') Habits.render();
     },
 
     async openDay(dateKey) {
@@ -146,6 +149,7 @@
     Pomodoro.init();
     Gantt.init();
     Notebook.init();
+    Habits.init();
 
     document.querySelectorAll('.tab').forEach((tab) => {
       tab.addEventListener('click', () => App.showView(tab.dataset.view));

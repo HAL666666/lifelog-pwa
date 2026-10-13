@@ -1,6 +1,6 @@
 /* Backup (export/import all stores) + opt-in encrypted inbox pull. No network unless user presses 「今すぐ取得」. */
 (function (global) {
-  const STORES = ['memos', 'reminders', 'plans', 'sessions', 'notebooks', 'nbpages', 'photos', 'meta'];
+  const STORES = ['memos', 'reminders', 'plans', 'sessions', 'notebooks', 'nbpages', 'habits', 'habitlogs', 'photos', 'meta'];
   const BLOB_STORES = ['photos', 'nbpages'];
   const SKIP_META = ['inboxPass']; // never export the inbox passphrase
   const keyOf = (store, r) => (store === 'meta' ? r.key : r.id);
@@ -100,7 +100,7 @@
     return m ? `https://drive.usercontent.google.com/download?id=${m[1]}&export=download&confirm=t` : u;
   }
 
-  /* Inbox item -> store record. Kinds: plan | todo/reminder | memo. */
+  /* Inbox item -> store record. Kinds: plan | todo/reminder | memo | habit. */
   function mapItem(it) {
     const id = 'inbox-' + it.id;
     const createdAt = it.createdAt || new Date().toISOString();
@@ -108,6 +108,7 @@
     if (it.kind === 'plan') return ['plans', { id, title: it.title, icon: it.icon || '', type: it.type === 'big' ? 'big' : 'small', start: it.start, end: it.end || null, color: it.color, createdAt, updatedAt, source: 'inbox' }];
     if (it.kind === 'todo' || it.kind === 'reminder' || it.kind === 'deadline') return ['reminders', { id, title: it.title, when: new Date(it.when || it.due).toISOString(), done: !!it.done, notified: false, createdAt, updatedAt, source: 'inbox' }];
     if (it.kind === 'memo') return ['memos', { id, dateKey: it.dateKey, text: it.text || it.title || '', createdAt, updatedAt, source: 'inbox' }];
+    if (it.kind === 'habit' || it.type === 'habit') { const t = parseInt(it.target, 10); return ['habits', { id, name: it.name || it.title || '習慣', emoji: it.emoji || it.icon || '', target: t >= 1 && t <= 7 ? t : null, order: Number(it.order) || 999, badges: [], createdAt, updatedAt, source: 'inbox' }]; }
     return null;
   }
 

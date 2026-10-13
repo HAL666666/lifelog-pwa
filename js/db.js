@@ -2,7 +2,7 @@
   'use strict';
 
   const DB_NAME = 'lifelog-db';
-  const DB_VERSION = 4;
+  const DB_VERSION = 5;
   let dbPromise = null;
 
   function openDB() {
@@ -43,6 +43,15 @@
         if (!db.objectStoreNames.contains('nbpages')) {
           const s = db.createObjectStore('nbpages', { keyPath: 'id' });
           s.createIndex('byNb', 'nb', { unique: false });
+        }
+        // v5: habits + daily check logs (additive; existing data kept)
+        if (!db.objectStoreNames.contains('habits')) {
+          db.createObjectStore('habits', { keyPath: 'id' });
+        }
+        if (!db.objectStoreNames.contains('habitlogs')) {
+          const s = db.createObjectStore('habitlogs', { keyPath: 'id' });
+          s.createIndex('byHabit', 'habit', { unique: false });
+          s.createIndex('byDate', 'date', { unique: false });
         }
       };
       req.onsuccess = () => resolve(req.result);
