@@ -2,7 +2,7 @@
   'use strict';
 
   const DB_NAME = 'lifelog-db';
-  const DB_VERSION = 2;
+  const DB_VERSION = 3;
   let dbPromise = null;
 
   function openDB() {
@@ -29,6 +29,11 @@
         // v2: timer sessions (additive; existing stores untouched)
         if (!db.objectStoreNames.contains('sessions')) {
           const s = db.createObjectStore('sessions', { keyPath: 'id' });
+          s.createIndex('byStart', 'start', { unique: false });
+        }
+        // v3: gantt plans (additive; existing data kept)
+        if (!db.objectStoreNames.contains('plans')) {
+          const s = db.createObjectStore('plans', { keyPath: 'id' });
           s.createIndex('byStart', 'start', { unique: false });
         }
       };

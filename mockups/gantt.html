@@ -1,0 +1,45 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gantt mockup</title><link rel="stylesheet" href="../css/styles.css">
+<style>
+body{max-width:390px}
+.tabs{display:flex;gap:6px;padding:10px 12px;background:var(--surface);border-bottom:1px solid var(--border)}
+.tabs button{flex:1;height:36px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--muted);font:inherit;font-size:.85rem}
+.tabs button.on{background:var(--primary);color:#fff;border-color:var(--primary);font-weight:700}
+.legend{display:flex;gap:12px;padding:8px 12px;font-size:.72rem;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.g{position:relative;margin:0 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.axis{position:relative;height:28px;border-bottom:1px solid var(--border);margin-left:112px;font-size:.68rem;color:var(--muted)}
+.axis span{position:absolute;top:7px;transform:translateX(2px)}
+.rows{position:relative}
+.row{display:flex;align-items:center;height:40px;border-bottom:1px solid #f1f5f9}
+.row.s{height:30px}
+.lbl{width:112px;padding-left:8px;font-size:.74rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row.s .lbl{color:var(--muted);font-size:.7rem}
+.track{position:relative;flex:1;height:100%}
+.bar{position:absolute;top:50%;transform:translateY(-50%);border-radius:6px;height:20px;color:#fff;font-size:.62rem;line-height:20px;padding-left:4px;white-space:nowrap}
+.row.s .bar{height:6px;border-radius:3px}
+.dot{position:absolute;top:50%;width:10px;height:10px;border-radius:50%;transform:translate(-50%,-50%);border:2px solid #fff;box-shadow:0 0 0 1px currentColor}
+.grid{position:absolute;top:0;bottom:0;width:1px;background:#f1f5f9}
+.today{position:absolute;top:0;bottom:0;width:2px;background:var(--danger);z-index:3}
+.today b{position:absolute;top:-1px;left:3px;font-size:.6rem;color:var(--danger);background:#fff;white-space:nowrap}
+.sec{font-size:.7rem;font-weight:700;color:var(--muted);padding:6px 8px;background:var(--bg)}
+</style></head><body>
+<header class="app-header"><h1>予定ガント</h1><span style="color:var(--muted);font-size:.8rem">2026 10–12月</span></header>
+<nav class="tabs"><button>大事</button><button>小さな用事</button><button class="on">全部</button></nav>
+<div class="legend"><span><i style="background:#2563eb"></i>旅行</span><span><i style="background:#10b981"></i>家族</span><span><i style="background:#8b5cf6"></i>仕事</span><span><i style="background:#f59e0b"></i>期限</span></div>
+<div class="g"><div class="axis" id="axis"></div><div class="rows" id="rows"></div></div>
+<p style="font-size:.7rem;color:var(--muted);padding:8px 14px">太いバー＝大事 / 細いバー＝小さな用事（●＝期限日）</p>
+<script>
+const S=new Date(2026,9,12),E=new Date(2026,11,31),T=new Date(2026,9,13),D=(E-S)/864e5;
+const p=d=>((d-S)/864e5/D*100);const d=(m,x)=>new Date(2026,m-1,x);
+const big=[["石岡旅行",d(10,24),d(10,26),"#2563eb"],["出張（大阪）",d(11,9),d(11,12),"#8b5cf6"],["帰省",d(12,28),d(12,31),"#10b981"]];
+const small=[["Yahoo商品券",d(11,4),d(11,18),"#f59e0b"],["PayPayポイント",d(11,1),d(11,30),"#ef4444"],["商品券",d(12,1),d(12,19),"#f97316"]];
+const ax=document.getElementById('axis');let g='';
+for(const [m,x,l] of [[10,15,'10/15'],[11,1,'11/1'],[11,15,'11/15'],[12,1,'12/1'],[12,15,'12/15']]){ax.innerHTML+=`<span style="left:${p(d(m,x))}%">${l}</span>`;g+=`<div class="grid" style="left:${p(d(m,x))}%"></div>`}
+let h='<div class="sec">大事</div>';
+for(const [n,a,b,c] of big)h+=`<div class="row"><div class="lbl">${n}</div><div class="track">${g}<div class="bar" style="left:${p(a)}%;width:${Math.max(p(b)-p(a),4)}%;background:${c}"></div></div></div>`;
+h+='<div class="sec">小さな用事</div>';
+for(const [n,a,b,c] of small)h+=`<div class="row s"><div class="lbl">${n} ${b.getMonth()+1}/${b.getDate()}</div><div class="track">${g}<div class="bar" style="left:${p(a)}%;width:${p(b)-p(a)}%;background:${c}88"></div><div class="dot" style="left:${p(b)}%;background:${c};color:${c}"></div></div></div>`;
+const r=document.getElementById('rows');r.innerHTML=h;
+r.insertAdjacentHTML('beforeend',`<div class="today" style="left:calc(112px + (100% - 112px)*${p(T)/100})"><b>今日 10/13</b></div>`);
+</script></body></html>

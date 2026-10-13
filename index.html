@@ -131,6 +131,21 @@
       </div>
     </section>
 
+    <!-- Gantt View -->
+    <section id="view-gantt" class="view">
+      <div class="gt-tabs" id="gt-tabs" role="group"><button type="button" data-t="big">大事</button><button type="button" data-t="small">小さな用事</button><button type="button" data-t="all">全部</button></div>
+      <div class="gt-nav">
+        <button type="button" class="icon-btn" id="gt-prev" aria-label="前へ">‹</button>
+        <span id="gt-label"></span>
+        <button type="button" class="icon-btn" id="gt-next" aria-label="次へ">›</button>
+        <div class="gt-ranges" id="gt-ranges"><button type="button" data-r="1">1か月</button><button type="button" data-r="3">3か月</button><button type="button" data-r="6">6か月</button></div>
+      </div>
+      <div class="gt-chart" id="gt-chart"></div>
+      <p id="gt-empty" class="empty-hint pad" hidden>この期間の予定はありません</p>
+      <p class="help-text pad">太いバー＝大事 / 細いバー＝小さな用事（●＝期限日）。タップで編集。</p>
+      <div class="fab-row"><button type="button" class="fab" id="gt-add" title="予定を追加">＋</button></div>
+    </section>
+
     <!-- Settings View -->
     <section id="view-settings" class="view">
       <h2 class="pad">設定・ヘルプ</h2>
@@ -182,6 +197,7 @@
 
   <nav class="tab-bar" role="tablist">
     <button type="button" class="tab active" data-view="calendar" aria-label="カレンダー">📅<span>カレンダー</span></button>
+    <button type="button" class="tab" data-view="gantt" aria-label="予定">📊<span>予定</span></button>
     <button type="button" class="tab" data-view="reminders" aria-label="リマインダー">🔔<span>リマインダー</span></button>
     <button type="button" class="tab" data-view="pomodoro" aria-label="ポモドーロ">⏱<span>ポモドーロ</span></button>
     <button type="button" class="tab" data-view="settings" aria-label="設定">⚙<span>設定</span></button>
@@ -212,6 +228,28 @@
     </form>
   </dialog>
 
+  <!-- Modal: plan -->
+  <dialog id="modal-plan">
+    <form method="dialog" id="form-plan">
+      <h3 id="plan-modal-title">予定</h3>
+      <label>タイトル<input type="text" id="plan-title" required maxlength="100"></label>
+      <div class="plan-row">
+        <label>アイコン<input type="text" id="plan-icon" maxlength="4" placeholder="✈️"></label>
+        <label>種類<select id="plan-type"><option value="big">大事</option><option value="small">小さな用事</option></select></label>
+      </div>
+      <div class="plan-row">
+        <label>開始<input type="date" id="plan-start" required></label>
+        <label>終了（任意）<input type="date" id="plan-end"></label>
+      </div>
+      <div class="plan-colors" id="plan-colors"></div>
+      <div class="dialog-actions">
+        <button type="button" class="btn-danger" id="plan-delete" hidden>削除</button>
+        <button type="button" class="btn-secondary" id="plan-cancel">キャンセル</button>
+        <button type="submit" class="btn-primary">保存</button>
+      </div>
+    </form>
+  </dialog>
+
   <!-- Lightbox -->
   <dialog id="lightbox">
     <button type="button" class="lightbox-close" id="lightbox-close" aria-label="閉じる">×</button>
@@ -225,6 +263,7 @@
   <script src="js/photos.js"></script>
   <script src="js/holidays.js"></script>
   <script src="js/calendar.js"></script>
+  <script src="js/gantt.js"></script>
   <script src="js/memos.js"></script>
   <script src="js/reminders.js"></script>
   <script src="js/pomodoro.js"></script>

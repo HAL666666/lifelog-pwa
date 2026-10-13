@@ -485,3 +485,37 @@ dialog textarea { min-height: 100px; resize: vertical; }
   box-shadow: 0 4px 20px rgba(0,0,0,.3);
 }
 .cal-weekdays[hidden], .cal-grid[hidden], .cal-multi[hidden] { display: none; }
+
+/* ---- Gantt ---- */
+.gt-tabs { display: flex; gap: 6px; padding: 10px 12px 4px; }
+.gt-tabs button { flex: 1; height: 36px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--muted); font: inherit; font-size: .85rem; cursor: pointer; }
+.gt-tabs button.active { background: linear-gradient(135deg, #3b82f6, #6366f1); color: #fff; border-color: transparent; font-weight: 700; box-shadow: 0 2px 8px rgba(79,70,229,.3); }
+.gt-nav { display: flex; align-items: center; gap: 2px; padding: 4px 8px; }
+.gt-nav #gt-label { font-weight: 700; font-size: .9rem; min-width: 92px; text-align: center; }
+.gt-ranges { margin-left: auto; display: flex; background: var(--border); border-radius: 10px; padding: 2px; }
+.gt-ranges button { border: none; background: none; padding: 6px 8px; border-radius: 8px; font-size: .75rem; color: var(--muted); cursor: pointer; }
+.gt-ranges button.active { background: var(--surface); color: var(--text); font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.gt-chart { margin: 4px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: 0 2px 10px rgba(15,23,42,.05); }
+.gt-axis { position: relative; height: 24px; border-bottom: 1px solid var(--border); font-size: .65rem; color: var(--muted); }
+.gt-axis span { position: absolute; top: 6px; padding-left: 3px; border-left: 1px solid var(--border); line-height: 14px; white-space: nowrap; }
+.gt-axis span.m { color: var(--text); font-weight: 700; }
+.gt-body { position: relative; }
+.gt-col { position: absolute; top: 0; bottom: 0; }
+.gt-col.stripe { background: rgba(99,102,241,.035); }
+.gt-col.sat { background: rgba(37,99,235,.045); }
+.gt-col.hol { background: rgba(239,68,68,.055); }
+.gt-sec { position: absolute; left: 0; right: 0; height: 22px; padding: 4px 8px; font-size: .68rem; font-weight: 700; color: var(--muted); letter-spacing: .05em; background: linear-gradient(90deg, rgba(248,250,252,.95), rgba(248,250,252,0)); }
+.gt-item { position: absolute; left: 0; right: 0; cursor: pointer; }
+.gt-bar { position: absolute; border-radius: 999px; box-shadow: 0 3px 8px -2px color-mix(in srgb, var(--c) 55%, transparent); }
+.gt-item.big .gt-bar { border-radius: 8px; }
+.gt-dot { position: absolute; width: 11px; height: 11px; border-radius: 50%; transform: translate(-50%, -50%); border: 2px solid #fff; box-shadow: 0 0 0 1px var(--c), 0 2px 5px color-mix(in srgb, var(--c) 50%, transparent); }
+.gt-lbl { position: absolute; transform: translateY(-50%); white-space: nowrap; font-weight: 600; line-height: 1; pointer-events: none; }
+.gt-lbl.in { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.25); }
+.gt-today { position: absolute; top: 0; bottom: 0; width: 1.5px; background: #f43f5e; box-shadow: 0 0 6px 1px rgba(244,63,94,.6); z-index: 3; pointer-events: none; }
+.gt-today b { position: absolute; bottom: 2px; left: 4px; font-size: .58rem; color: #fff; background: #f43f5e; border-radius: 4px; padding: 1px 4px; white-space: nowrap; }
+.plan-row { display: flex; gap: 8px; }
+.plan-row label { flex: 1; min-width: 0; }
+.plan-colors { display: flex; gap: 10px; margin: 8px 0; }
+.plan-colors input { display: none; }
+.plan-colors i { display: block; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; }
+.plan-colors input:checked + i { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--text); }
