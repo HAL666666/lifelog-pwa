@@ -126,76 +126,6 @@
     e.target.value = '';
   }
 
-  async function exportData() {
-    const includePhotos = document.getElementById('export-photos').checked;
-    if (includePhotos && !confirm('写真を含めるとファイルが非常に大きくなります。続行しますか？')) {
-      return;
-    }
-    const memos = await DB.getAll('memos');
-    const reminders = await DB.getAll('reminders');
-    const payload = {
-      version: 1,
-      exportedAt: new Date().toISOString(),
-      memos,
-      reminders,
-      photos: []
-    };
-    if (includePhotos) {
-      const photos = await Photos.allPhotos();
-      for (const p of photos) {
-        payload.photos.push({
-          id: p.id,
-          dateKey: p.dateKey,
-          takenAt: p.takenAt,
-          createdAt: p.createdAt,
-          mime: p.mime,
-          blob: await Photos.blobToDataURL(p.blob),
-          thumb: p.thumb ? await Photos.blobToDataURL(p.thumb) : null
-        });
-      }
-    }
-    const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `lifelog-export-${ExifUtil.toDateKey(new Date())}.json`;
-    a.click();
-    App.toast('エクスポートしました');
-  }
-
-  async function importData(file) {
-    const text = await file.text();
-    const data = JSON.parse(text);
-    if (!data || !Array.isArray(data.memos) || !Array.isArray(data.reminders)) {
-      throw new Error('不正なファイル');
-    }
-    for (const m of data.memos) {
-      if (!m.id) m.id = DB.uid();
-      await DB.put('memos', m);
-    }
-    for (const r of data.reminders) {
-      if (!r.id) r.id = DB.uid();
-      await DB.put('reminders', r);
-    }
-    if (Array.isArray(data.photos)) {
-      for (const p of data.photos) {
-        const rec = {
-          id: p.id || DB.uid(),
-          dateKey: p.dateKey,
-          takenAt: p.takenAt,
-          createdAt: p.createdAt || new Date().toISOString(),
-          mime: p.mime || 'image/jpeg',
-          blob: typeof p.blob === 'string' ? Photos.dataURLToBlob(p.blob) : p.blob,
-          thumb: p.thumb && typeof p.thumb === 'string' ? Photos.dataURLToBlob(p.thumb) : p.thumb
-        };
-        await DB.put('photos', rec);
-      }
-    }
-    Reminders.scheduleAll();
-    await Calendar.render();
-    await Reminders.renderUpcoming();
-    App.toast('インポートしました');
-  }
-
   async function registerSW() {
     if (!('serviceWorker' in navigator)) return;
     try {
@@ -232,20 +162,7 @@
       updateNotifStatus();
       App.toast(p === 'granted' ? '通知を許可しました' : '通知は許可されませんでした');
     });
-    document.getElementById('btn-export').addEventListener('click', () => {
-      exportData().catch((e) => { console.error(e); App.toast('エクスポート失敗'); });
-    });
-    document.getElementById('import-input').addEventListener('change', async (e) => {
-      const f = e.target.files && e.target.files[0];
-      if (!f) return;
-      try {
-        await importData(f);
-      } catch (err) {
-        console.error(err);
-        App.toast('インポート失敗');
-      }
-      e.target.value = '';
-    });
+    Backup.init();
 
     await Calendar.render();
     await Reminders.checkOverdue();

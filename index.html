@@ -208,17 +208,25 @@
         </p>
       </div>
       <div class="settings-block">
-        <h3>データのエクスポート / インポート</h3>
+        <h3>バックアップ</h3>
         <label class="toggle-row">
           <input type="checkbox" id="export-photos">
           <span>写真も含める（容量に注意）</span>
         </label>
-        <button type="button" class="btn-primary full" id="btn-export">JSONエクスポート</button>
+        <button type="button" class="btn-primary full" id="btn-export">バックアップを書き出す (JSON)</button>
         <label class="btn-secondary full file-label">
-          JSONインポート
+          バックアップから復元（マージ）
           <input type="file" id="import-input" accept="application/json,.json" hidden>
         </label>
-        <p class="help-text">メモ・リマインダーは常に含まれます。写真は Base64 のため巨大になりやすいです。</p>
+        <p class="help-text">メモ・予定・リマインダー・ポモドーロ記録・ノート（書き込み含む）を保存します。写真本体は任意。復元は同じIDを重複させずに統合します。</p>
+      </div>
+      <div class="settings-block">
+        <h3>受信箱（任意・オンライン）</h3>
+        <p class="help-text">アシスタントが作成した暗号化ファイルから予定・TODOを取り込みます。ボタンを押したときだけ通信します。</p>
+        <label class="toggle-row">URL <input type="url" id="inbox-url" placeholder="https://..." style="flex:1"></label>
+        <label class="toggle-row">パスフレーズ <input type="password" id="inbox-pass" autocomplete="off" style="flex:1"></label>
+        <button type="button" class="btn-secondary full" id="btn-inbox-pull">今すぐ取得</button>
+        <p class="help-text" id="inbox-status"></p>
       </div>
       <div class="settings-block">
         <h3>ホーム画面に追加</h3>
@@ -311,6 +319,7 @@
   <script src="js/memos.js"></script>
   <script src="js/reminders.js"></script>
   <script src="js/pomodoro.js"></script>
+  <script src="js/backup.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
