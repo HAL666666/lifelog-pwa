@@ -146,6 +146,48 @@
       <div class="fab-row"><button type="button" class="fab" id="gt-add" title="予定を追加">＋</button></div>
     </section>
 
+    <section id="view-notebook" class="view">
+      <div id="nb-list-wrap">
+        <div class="nb-grid" id="nb-grid"></div>
+        <p id="nb-empty" class="empty-hint pad" hidden>ノートがありません。＋で作成</p>
+        <div class="fab-row"><button type="button" class="fab" id="nb-new" title="ノートを作成">＋</button></div>
+      </div>
+      <div id="nb-detail" hidden>
+        <div class="nb-bar">
+          <button type="button" class="icon-btn" id="nb-back" aria-label="戻る">‹</button>
+          <strong id="nb-title"></strong>
+          <button type="button" class="btn-sm" id="nb-rename">名前</button>
+          <button type="button" class="btn-sm btn-danger" id="nb-delete">削除</button>
+        </div>
+        <div class="gt-tabs" id="nb-modes"><button type="button" data-m="grid" class="active">グリッド</button><button type="button" data-m="card">カード</button></div>
+        <div class="nb-pgrid" id="nb-pgrid"></div>
+        <div class="nb-card-wrap" id="nb-cardwrap" hidden>
+          <div class="nb-stage" id="nb-stage"><div class="nb-layer" id="nb-layer"><img id="nb-img" alt="" draggable="false"><canvas id="nb-ink"></canvas></div></div>
+          <div class="nb-count" id="nb-count"></div>
+          <div class="nb-actions" id="nb-actions">
+            <button type="button" class="btn-sm" data-a="prev">‹</button>
+            <button type="button" class="btn-sm" data-a="left">◀移動</button>
+            <button type="button" class="btn-sm" data-a="right">移動▶</button>
+            <button type="button" class="btn-sm" data-a="dup">複製</button>
+            <button type="button" class="btn-sm" data-a="pen">✏️ペン</button>
+            <button type="button" class="btn-sm btn-danger" data-a="del">削除</button>
+            <button type="button" class="btn-sm" data-a="next">›</button>
+          </div>
+          <div class="nb-pen" id="nb-pen" hidden>
+            <span class="nb-colors" id="nb-colors"></span>
+            <input type="range" id="nb-width" min="1" max="24" value="4" aria-label="太さ">
+            <button type="button" class="btn-sm" id="nb-eraser">消しゴム</button>
+            <button type="button" class="btn-sm" id="nb-undo">↶</button>
+            <button type="button" class="btn-sm" id="nb-clear">全消去</button>
+            <button type="button" class="btn-sm btn-primary" id="nb-done">完了</button>
+          </div>
+        </div>
+        <p id="nb-pempty" class="empty-hint pad" hidden>写真を追加してください</p>
+        <div class="fab-row"><label class="fab" title="写真を追加">＋<input type="file" id="nb-file" accept="image/*" multiple hidden></label></div>
+      </div>
+      <div class="nb-undo" id="nb-undo-toast" hidden><span></span><button type="button">元に戻す</button></div>
+    </section>
+
     <!-- Settings View -->
     <section id="view-settings" class="view">
       <h2 class="pad">設定・ヘルプ</h2>
@@ -198,6 +240,7 @@
   <nav class="tab-bar" role="tablist">
     <button type="button" class="tab active" data-view="calendar" aria-label="カレンダー">📅<span>カレンダー</span></button>
     <button type="button" class="tab" data-view="gantt" aria-label="予定">📊<span>予定</span></button>
+    <button type="button" class="tab" data-view="notebook" aria-label="ノート">📓<span>ノート</span></button>
     <button type="button" class="tab" data-view="reminders" aria-label="リマインダー">🔔<span>リマインダー</span></button>
     <button type="button" class="tab" data-view="pomodoro" aria-label="ポモドーロ">⏱<span>ポモドーロ</span></button>
     <button type="button" class="tab" data-view="settings" aria-label="設定">⚙<span>設定</span></button>
@@ -264,6 +307,7 @@
   <script src="js/holidays.js"></script>
   <script src="js/calendar.js"></script>
   <script src="js/gantt.js"></script>
+  <script src="js/notebook.js"></script>
   <script src="js/memos.js"></script>
   <script src="js/reminders.js"></script>
   <script src="js/pomodoro.js"></script>
