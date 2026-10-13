@@ -28,10 +28,12 @@
         <h2 id="cal-month-label"></h2>
         <button type="button" class="icon-btn" id="cal-next" aria-label="翌月">›</button>
       </div>
-      <div class="cal-weekdays" aria-hidden="true">
-        <span>日</span><span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span>土</span>
+      <div id="cal-modes" class="cal-modes" role="group" aria-label="表示期間">
+        <button type="button" data-mode="month">月</button><button type="button" data-mode="3">3ヶ月</button><button type="button" data-mode="6">6ヶ月</button><button type="button" data-mode="12">1年</button>
       </div>
+      <div id="cal-weekdays" class="cal-weekdays" aria-hidden="true"></div>
       <div id="cal-grid" class="cal-grid" role="grid"></div>
+      <div id="cal-multi" class="cal-multi" hidden></div>
       <div class="fab-row">
         <label class="fab" title="写真を追加">
           📷
@@ -133,6 +135,12 @@
     <section id="view-settings" class="view">
       <h2 class="pad">設定・ヘルプ</h2>
       <div class="settings-block">
+        <h3>カレンダー</h3>
+        <label class="toggle-row">週の始まり
+          <select id="week-start"><option value="0">日曜日</option><option value="1">月曜日</option></select>
+        </label>
+      </div>
+      <div class="settings-block">
         <h3>通知</h3>
         <button type="button" class="btn-primary full" id="btn-notif-perm">通知を許可する</button>
         <p class="help-text" id="notif-status"></p>
@@ -215,6 +223,7 @@
   <script src="js/exif.js"></script>
   <script src="js/db.js"></script>
   <script src="js/photos.js"></script>
+  <script src="js/holidays.js"></script>
   <script src="js/calendar.js"></script>
   <script src="js/memos.js"></script>
   <script src="js/reminders.js"></script>
