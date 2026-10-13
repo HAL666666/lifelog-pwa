@@ -88,6 +88,7 @@
     <!-- Pomodoro View -->
     <section id="view-pomodoro" class="view">
       <div class="pomo-display">
+        <div class="pomo-today">今日 作業 <b id="pomo-today-work">0分</b> ／ 休憩込み <b id="pomo-today-all">0分</b></div>
         <div id="pomo-mode" class="pomo-mode">作業</div>
         <div id="pomo-time" class="pomo-time">25:00</div>
         <div class="pomo-controls">
@@ -100,9 +101,31 @@
           <span>画面を消さない（Wake Lock）</span>
         </label>
         <div class="pomo-settings">
-          <label>作業（分）<input type="number" id="pomo-work" min="1" max="120" value="25"></label>
-          <label>休憩（分）<input type="number" id="pomo-break" min="1" max="60" value="5"></label>
+          <label>作業（分）<input type="number" id="pomo-work" min="1" max="600" value="25" inputmode="numeric"></label>
+          <label>休憩（分）<input type="number" id="pomo-break" min="0" max="600" value="5" inputmode="numeric"></label>
         </div>
+        <div class="pomo-presets" id="pomo-presets"></div>
+      </div>
+      <div class="pomo-card">
+        <h3>ラベル付きタイマー（同時計測）</h3>
+        <div class="pomo-add">
+          <input type="text" id="mt-label" placeholder="ラベル（例：英語）">
+          <input type="number" id="mt-min" min="1" max="600" value="25" inputmode="numeric" aria-label="分">
+          <button type="button" class="btn-primary" id="mt-add">開始</button>
+        </div>
+        <ul id="mt-list" class="mt-list"></ul>
+      </div>
+      <div class="pomo-card">
+        <h3>累計</h3>
+        <table class="pomo-totals"><thead><tr><th></th><th>作業</th><th>休憩込み</th></tr></thead><tbody id="pomo-totals"></tbody></table>
+        <div class="pomo-range">
+          <input type="date" id="tot-from"> 〜 <input type="date" id="tot-to">
+        </div>
+        <div class="pomo-range-out" id="tot-range-out"></div>
+      </div>
+      <div class="pomo-card">
+        <h3>バッジ</h3>
+        <div class="badges" id="pomo-badges"></div>
       </div>
     </section>
 

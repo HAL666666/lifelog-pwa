@@ -312,6 +312,33 @@ body {
   border-radius: 8px;
 }
 
+.pomo-today { font-size: 0.9rem; color: var(--muted); margin-bottom: 12px; }
+.pomo-today b { color: inherit; }
+.pomo-presets { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 16px; }
+.pomo-presets button { min-height: 40px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); font-size: 0.85rem; padding: 0; }
+.pomo-presets button.on { border-color: currentColor; font-weight: 700; }
+.pomo-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; margin: 0 12px 12px; }
+.pomo-card h3 { margin: 0 0 8px; font-size: 0.95rem; }
+.pomo-add { display: flex; gap: 6px; }
+.pomo-add input { min-height: var(--tap); border: 1px solid var(--border); border-radius: 8px; padding: 0 8px; font-size: 1rem; min-width: 0; }
+.pomo-add input[type=text] { flex: 1; }
+.pomo-add input[type=number] { width: 64px; text-align: center; }
+.mt-list { list-style: none; margin: 8px 0 0; padding: 0; }
+.mt-list li { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-top: 1px solid var(--border); }
+.mt-list .lbl { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mt-list .t { font-variant-numeric: tabular-nums; font-weight: 700; }
+.mt-list button { min-height: 36px; padding: 0 10px; }
+.pomo-totals { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.pomo-totals td, .pomo-totals th { padding: 4px; text-align: right; }
+.pomo-totals td:first-child, .pomo-totals th:first-child { text-align: left; }
+.pomo-range { display: flex; gap: 4px; align-items: center; margin-top: 8px; font-size: 0.85rem; }
+.pomo-range input { flex: 1; min-width: 0; min-height: 36px; }
+.pomo-range-out { font-size: 0.9rem; margin-top: 4px; }
+.badges { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; }
+.badge { padding: 8px 4px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.8rem; }
+.badge .i { font-size: 1.8rem; display: block; }
+.badge.locked { opacity: 0.35; filter: grayscale(1); }
+
 /* Settings */
 .settings-block {
   background: var(--surface);
