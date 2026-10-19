@@ -12,7 +12,7 @@ async def main():
         ok = ok and bool(cond)
         print(f"{name}: {'OK' if cond else 'FAIL'} {info}")
     async with async_playwright() as p:
-        b = await p.chromium.launch(headless=True)
+        b = await p.chromium.launch(headless=True, executable_path="/usr/bin/google-chrome" if __import__("os").path.exists("/usr/bin/google-chrome") else None)
         ctx = await b.new_context(viewport={"width": 390, "height": 844}, device_scale_factor=2,
                                   is_mobile=True, has_touch=True, locale="ja-JP", accept_downloads=True)
         page = await ctx.new_page()

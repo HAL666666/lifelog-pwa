@@ -171,6 +171,7 @@
       App.toast(p === 'granted' ? '通知を許可しました' : '通知は許可されませんでした');
     });
     Backup.init();
+    if (window.Transfer) Transfer.init();
     StorageGuard.init();
     Collage.init();
 

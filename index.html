@@ -258,6 +258,19 @@
         <button type="button" class="btn-secondary full" id="btn-persist" hidden>データ保護をもう一度リクエスト</button>
         <p class="help-text">ブラウザが空き容量不足などで自動的にデータを消さないよう保護を求めます。それでも機種変更や削除に備えて、定期的にJSON書き出しをしてください。</p>
       </div>
+      <div class="settings-block" id="transfer-block">
+        <h3>引っ越し・まるごとバックアップ</h3>
+        <p class="help-text">機種変更の前に使います。写真・メモ・予定（大事／小さな用事）・TODO／リマインダー／期限・習慣・ノート・コラージュ・タイマー記録・受信箱の設定・表示設定を、<b>1つのファイル</b>にまとめます（受信箱のパスフレーズだけは入れません）。</p>
+        <button type="button" class="btn-primary full" id="btn-export-all">📤 データを書き出す（写真込み）</button>
+        <label class="btn-secondary full file-label">
+          📥 データを読み込む
+          <input type="file" id="import-all-input" accept="application/json,.json" hidden>
+        </label>
+        <label class="toggle-row"><input type="radio" name="import-mode" value="replace" checked> <span>読み込み方：置き換え（おすすめ）</span></label>
+        <label class="toggle-row"><input type="radio" name="import-mode" value="merge"> <span>読み込み方：統合（今のデータも残す）</span></label>
+        <div id="transfer-status" class="help-text"></div>
+        <p class="help-text">iPhone では共有メニューが開くので「"ファイル"に保存」か Google ドライブを選んでください。読み込みは内容を確認してから実行し、失敗しても今のデータは消えません。</p>
+      </div>
       <div class="settings-block" id="backup-block">
         <h3>バックアップ</h3>
         <label class="toggle-row">
@@ -415,6 +428,7 @@
   <script src="js/pomodoro.js"></script>
   <script src="js/habits.js"></script>
   <script src="js/backup.js"></script>
+  <script src="js/transfer.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/collage.js"></script>
   <script src="js/app.js"></script>
