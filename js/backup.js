@@ -139,6 +139,7 @@
       const withPhotos = $('export-photos').checked;
       if (withPhotos && !confirm('写真を含めるとファイルが非常に大きくなります。続行しますか？')) return;
       download(await buildExport(withPhotos), `lifelog-backup-${new Date().toISOString().slice(0, 10)}${withPhotos ? '-photos' : ''}.json`);
+      if (global.StorageGuard) StorageGuard.markExported();
       App.toast('エクスポートしました');
     });
     $('import-input').addEventListener('change', async (e) => {

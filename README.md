@@ -10,6 +10,7 @@
 - **リマインダー**: タイトル＋日時。アプリを開いている間のみ通知（Service Worker `showNotification`）
 - **ポモドーロ**: 既定 25/5 分（変更可）。終了時刻を保存するためバックグラウンドやリロード後も正確。Wake Lock オプション
 - **データ**: JSON エクスポート／インポート（写真は任意・Base64 のため巨大化に注意）
+- **データ保護**: 起動時に `navigator.storage.persist()` を要求（設定 > データ保護に状態と使用量）。最終書き出しから14日以上（または未実施）で控えめなバックアップ案内バナー（× で3日間非表示）。追加の localStorage キーは `lastExportAt` と `exportReminderSnoozeUntil` のみ
 
 ## GitHub Pages への公開
 

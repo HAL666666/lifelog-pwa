@@ -597,3 +597,18 @@ label.fab { display: inline-flex; align-items: center; justify-content: center; 
 @keyframes cfall { to { transform: translate(var(--dx), 105vh) rotate(720deg); opacity: .7; } }
 .celebrate-msg { position: absolute; top: 38%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 14px 20px; border-radius: 16px; font-weight: 800; box-shadow: 0 10px 30px rgba(0,0,0,.18); animation: cmsg 2.5s ease forwards; white-space: nowrap; }
 @keyframes cmsg { 0% { transform: translate(-50%, -50%) scale(.6); opacity: 0; } 15%, 80% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { opacity: 0; } }
+
+/* Storage protection + backup reminder */
+.backup-banner {
+  display: flex; align-items: center; gap: 4px;
+  background: #fffbeb; border-bottom: 1px solid #fde68a; color: #92400e;
+  padding: 6px 6px 6px 12px; font-size: 0.85rem;
+}
+.backup-banner[hidden] { display: none; }
+.backup-banner-text { flex: 1; text-align: left; background: none; border: none; color: inherit; font: inherit; padding: 4px 0; cursor: pointer; line-height: 1.45; }
+.backup-banner-close { background: none; border: none; color: inherit; font-size: 1.2rem; min-width: 36px; min-height: 36px; cursor: pointer; border-radius: 8px; }
+.persist-status { margin: 0; font-weight: 700; font-size: 0.95rem; padding: 8px 10px; border-radius: 8px; }
+.persist-status.on { color: #166534; background: #f0fdf4; }
+.persist-status.off { color: #92400e; background: #fffbeb; }
+#btn-persist { margin-top: 10px; }
+.settings-block.flash { box-shadow: 0 0 0 3px var(--accent); transition: box-shadow .3s; }

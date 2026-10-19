@@ -52,7 +52,7 @@
       document.getElementById('header-title').textContent = titles[name] || 'ライフログ';
       if (name === 'reminders') Reminders.renderUpcoming();
       if (name === 'pomodoro') Pomodoro.syncFromStorage();
-      if (name === 'settings') updateNotifStatus();
+      if (name === 'settings') { updateNotifStatus(); if (window.StorageGuard) StorageGuard.renderStatus(); }
       if (name === 'calendar') Calendar.render();
       if (name === 'gantt') Gantt.render();
       if (name === 'notebook') Notebook.render();
@@ -167,6 +167,7 @@
       App.toast(p === 'granted' ? '通知を許可しました' : '通知は許可されませんでした');
     });
     Backup.init();
+    StorageGuard.init();
 
     await Calendar.render();
     await Reminders.checkOverdue();
