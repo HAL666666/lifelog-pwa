@@ -1,5 +1,5 @@
 /* Lifelog PWA service worker — caches app shell; relative to SW scope */
-const CACHE = 'lifelog-shell-v9';
+const CACHE = 'lifelog-shell-v10';
 const SHELL = [
   './',
   './index.html',

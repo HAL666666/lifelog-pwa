@@ -47,13 +47,13 @@
     const dw = ctx.measureText(date).width;
     let tw = 0;
     if (title) { ctx.font = '600 52px system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif'; tw = ctx.measureText(title).width; }
-    const bw = Math.max(dw, tw) + 56, bh = title ? 150 : 104;
+    const bw = Math.max(dw, tw) + 56, bh = title ? 176 : 104;
     const bx = SIZE - GAP - 18 - bw, by = SIZE - GAP - 18 - bh;
     ctx.fillStyle = 'rgba(15,23,42,.55)';
     ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(bx, by, bw, bh, 22); else ctx.rect(bx, by, bw, bh); ctx.fill();
     ctx.fillStyle = '#fff'; ctx.textAlign = 'right'; ctx.textBaseline = 'alphabetic';
     ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 6;
-    if (title) { ctx.font = '600 52px system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif'; ctx.fillText(title, bx + bw - 28, by + 64); }
+    if (title) { ctx.font = '600 52px system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif'; ctx.fillText(title, bx + bw - 28, by + 66); }
     ctx.font = '700 72px system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif';
     ctx.fillText(date, bx + bw - 28, by + bh - 26);
     ctx.restore();
