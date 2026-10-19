@@ -2,7 +2,18 @@
   'use strict';
 
   let year, month; // month 0-11
-  let markers = { photos: {}, memos: {}, reminders: {} };
+  let markers = { photos: {}, memos: {}, reminders: {}, habits: {}, todos: {} };
+  // 14 & 16: marker types — shape + color; order = display order
+  const MK = [['photos', 'mk-photo', '写真'], ['memos', 'mk-memo', 'メモ'], ['reminders', 'mk-rem', 'リマインダー'], ['habits', 'mk-habit', '習慣達成'], ['todos', 'mk-todo', 'やること完了']];
+  function markHTML(key, max) {
+    let h = '', n = 0;
+    for (const [k, cls, label] of MK) {
+      const v = markers[k][key]; if (!v || n >= max) continue;
+      const part = k === 'habits' && v === 'part';
+      h += `<i class="mk ${cls}${part ? ' part' : ''}" title="${label}${part ? '（一部）' : ''}"></i>`; n++;
+    }
+    return h;
+  }
   let urlCache = {};
   let mode = localStorage.getItem('calMode') || 'month'; // month|3|6|12
   const weekStart = () => (localStorage.getItem('weekStart') === '1' ? 1 : 0);
@@ -62,7 +73,8 @@
         const hol = Holidays.name(key);
         if (dow === 0 || hol) c.classList.add('sun'); else if (dow === 6) c.classList.add('sat');
         if (hol) { c.classList.add('holiday'); c.title = hol; }
-        if (markers.photos[key] || markers.memos[key] || markers.reminders[key]) c.classList.add('has-ev');
+        const mh = markHTML(key, 5);
+        if (mh) { c.classList.add('has-ev'); c.innerHTML = `${d}<span class="mini-mk">${mh}</span>`; }
         if (key === todayKey) c.classList.add('today');
         c.addEventListener('click', () => { if (global.App && App.openDay) App.openDay(key); });
         g.appendChild(c);
@@ -108,6 +120,19 @@
       const dk = ExifUtil.toDateKey(new Date(r.when));
       markers.reminders[dk] = (markers.reminders[dk] || 0) + 1;
     }
+    // やること完了 = completed reminders/TODOs (inbox todo/deadline items are reminders). Date = doneAt, else due date.
+    markers.todos = {};
+    for (const r of reminders) {
+      if (!r.done) continue;
+      const k = ExifUtil.toDateKey(new Date(r.doneAt || r.when));
+      markers.todos[k] = (markers.todos[k] || 0) + 1;
+    }
+    // 習慣達成: all habits done = 'all', some = 'part'
+    markers.habits = {};
+    if (global.Habits && Habits.dayStatus) {
+      const ds = await Habits.dayStatus();
+      for (const k of Object.keys(ds.by)) markers.habits[k] = ds.allDone(k) ? 'all' : 'part';
+    }
     // revoke old URLs
     Object.values(urlCache).forEach((u) => URL.revokeObjectURL(u));
     urlCache = {};
@@ -116,8 +141,14 @@
     }
   }
 
+  function renderLegend() {
+    const el = document.getElementById('cal-legend'); if (!el) return;
+    el.innerHTML = MK.map(([, cls, label]) => `<span><i class="mk ${cls}"></i>${label}</span>`).join('') + '<span><i class="mk mk-habit part"></i>習慣（一部）</span>';
+  }
+
   async function render() {
     await refreshMarkers();
+    renderLegend();
     const label = document.getElementById('cal-month-label');
     document.querySelectorAll('#cal-modes button').forEach((b) =>
       b.classList.toggle('active', b.dataset.mode === mode));
@@ -182,21 +213,7 @@
 
       const marks = document.createElement('div');
       marks.className = 'cal-markers';
-      if (markers.photos[dateKey] && !urlCache[dateKey]) {
-        const s = document.createElement('span');
-        s.className = 'dot-photo';
-        marks.appendChild(s);
-      }
-      if (markers.memos[dateKey]) {
-        const s = document.createElement('span');
-        s.className = 'dot-memo';
-        marks.appendChild(s);
-      }
-      if (markers.reminders[dateKey]) {
-        const s = document.createElement('span');
-        s.className = 'dot-reminder';
-        marks.appendChild(s);
-      }
+      marks.innerHTML = markHTML(dateKey, 5);
       cell.appendChild(marks);
 
       cell.addEventListener('click', () => {

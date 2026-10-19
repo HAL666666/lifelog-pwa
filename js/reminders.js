@@ -103,6 +103,7 @@
       doneBtn.textContent = '完了';
       doneBtn.addEventListener('click', async () => {
         r.done = true;
+        r.doneAt = new Date().toISOString(); // additive: for calendar やること完了 marker
         await DB.put('reminders', r);
         await renderUpcoming();
         if (dayContext) await renderForDay(dayContext);

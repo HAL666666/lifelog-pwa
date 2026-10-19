@@ -1,5 +1,6 @@
 (function () {
   'use strict';
+  const global_ = window;
 
   /** Base path for GitHub Pages subpath (e.g. /lifelog-pwa/) */
   function getBasePath() {
@@ -55,7 +56,7 @@
       if (name === 'settings') { updateNotifStatus(); if (window.StorageGuard) StorageGuard.renderStatus(); }
       if (name === 'calendar') Calendar.render();
       if (name === 'gantt') Gantt.render();
-      if (name === 'notebook') Notebook.render();
+      if (name === 'notebook') { Notebook.render(); if (window.Collage) Collage.refresh(); }
       if (name === 'habits') Habits.render();
     },
 
@@ -69,6 +70,7 @@
       await Memos.renderForDay(dateKey);
       await Reminders.renderForDay(dateKey);
       this.showView('day');
+      if (global_.Collage) Collage.refresh();
     }
   };
 
@@ -83,6 +85,8 @@
       const img = document.createElement('img');
       img.alt = '写真';
       img.src = URL.createObjectURL(p.thumb || p.blob);
+      const t = p.takenAt ? new Date(p.takenAt) : null;
+      grid.appendChild(Thumbs.wrap(img, dateKey, t && !isNaN(t) ? `${t.getHours()}:${String(t.getMinutes()).padStart(2, '0')}` : ''));
       img.addEventListener('click', () => openLightbox(p));
       img.addEventListener('contextmenu', (e) => {
         e.preventDefault();
@@ -93,7 +97,6 @@
           });
         }
       });
-      grid.appendChild(img);
     }
   }
 
@@ -142,6 +145,7 @@
 
   async function boot() {
     App.basePath = getBasePath();
+    Thumbs.init();
     await DB.openDB();
     Calendar.init();
     Memos.init();
@@ -168,11 +172,13 @@
     });
     Backup.init();
     StorageGuard.init();
+    Collage.init();
 
     await Calendar.render();
     await Reminders.checkOverdue();
     registerSW();
     App.showView('calendar');
+    Collage.checkPrompt().catch((e) => console.warn(e));
   }
 
   window.App = App;

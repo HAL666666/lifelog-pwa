@@ -46,7 +46,8 @@
     const dw = W / days;
     const x = (d) => ((d - s) / DAY) * dw;
 
-    let all = await DB.getAll('plans');
+    document.getElementById('gt-help').textContent = '太いバー＝大事 / 細いバー＝小さな用事（●＝期限日）。タップで編集。';
+    let all = st.tab === 'habit' ? [] : await DB.getAll('plans');
     all = all.filter((p) => p.start && parse(p.start) < e && parse(p.end || p.start) >= s);
     if (st.tab !== 'all') all = all.filter((p) => p.type === st.tab);
     all.sort((a, b) => (a.type === b.type ? 0 : a.type === 'big' ? -1 : 1) || a.start.localeCompare(b.start));
@@ -69,6 +70,7 @@
       if (lbl) ax += `<span style="left:${(i * dw).toFixed(1)}px" class="${d.getDate() === 1 ? 'm' : ''}">${lbl}</span>`;
     }
 
+    if (st.tab === 'habit') return renderHabits(root, { s, e, days, W, dw, bg, ax });
     let rows = '', y = 0, section = null;
     for (const p of all) {
       if (st.tab === 'all' && p.type !== section) {
@@ -112,7 +114,51 @@
     let today = '';
     if (t >= s && t < e) today = `<div class="gt-today" style="left:${x(t) + dw / 2}px"><b>今日</b></div>`;
     root.innerHTML = `<div class="gt-axis">${ax}</div><div class="gt-body" style="height:${H + 8}px">${bg}${rows}${today}</div>`;
+    document.getElementById('gt-empty').textContent = 'この期間の予定はありません';
     document.getElementById('gt-empty').hidden = all.length > 0;
+  }
+
+  /* 12 & 17b: habit Gantt — one row per habit, achieved days as filled segments (consecutive days merged).
+     Past days where every habit was achieved are dimmed; missed days are tinted so they stand out. */
+  async function renderHabits(root, { s, e, days, W, dw, bg, ax }) {
+    document.getElementById('gt-help').textContent = '緑の帯＝達成した日（連続はつながる）。全部達成した日はうすく、未達の日は赤く表示。タップで習慣タブへ。';
+    const ds = await Habits.dayStatus();
+    const hs = ds.hs.sort((a, b) => (a.order || 0) - (b.order || 0));
+    const t0 = new Date(); t0.setHours(0, 0, 0, 0);
+    const todayK = key(t0);
+    let rows = '', y = 0;
+    for (const h of hs) {
+      const set = new Set(ds.logs.filter((l) => l.habit === h.id).map((l) => l.date));
+      const born = ds.born[h.id] || '0000-00-00';
+      let segs = '', miss = '', n = 0, runStart = -1, runAll = null;
+      const flush = (i) => {
+        if (runStart < 0) return;
+        segs += `<i class="gt-hseg${runAll ? ' all' : ''}" style="left:${(runStart * dw).toFixed(2)}px;width:${Math.max(2, (i - runStart) * dw - (dw > 4 ? 1 : 0)).toFixed(2)}px;--c:${h.color || '#10b981'}"></i>`;
+        runStart = -1;
+      };
+      for (let i = 0; i < days; i++) {
+        const d = new Date(s.getFullYear(), s.getMonth(), s.getDate() + i), k = key(d);
+        const on = set.has(k), all = k < todayK && ds.allDone(k);
+        if (on) {
+          n++;
+          if (runStart >= 0 && runAll !== all) flush(i);
+          if (runStart < 0) { runStart = i; runAll = all; }
+        } else {
+          flush(i);
+          if (k < todayK && k >= born) miss += `<i class="gt-hmiss" style="left:${(i * dw).toFixed(2)}px;width:${dw.toFixed(2)}px"></i>`;
+        }
+      }
+      flush(days);
+      rows += `<div class="gt-hrow" data-habit="${esc(h.id)}" style="top:${y}px"><span class="gt-hlbl">${esc((h.emoji ? h.emoji + ' ' : '') + h.name)} <small>${n}日</small></span><div class="gt-htrack">${miss}${segs}</div></div>`;
+      y += 40;
+    }
+    const H = Math.max(y, 60);
+    let today = '';
+    if (t0 >= s && t0 < e) today = `<div class="gt-today" style="left:${((t0 - s) / DAY) * dw + dw / 2}px"><b>今日</b></div>`;
+    root.innerHTML = `<div class="gt-axis">${ax}</div><div class="gt-body habit" style="height:${H + 8}px">${bg}${rows}${today}</div>`;
+    const empty = document.getElementById('gt-empty');
+    empty.textContent = '習慣がありません（習慣タブで追加）';
+    empty.hidden = hs.length > 0;
   }
 
   function openForm(p) {
@@ -164,8 +210,9 @@
     const nav = (dir) => { st.anchor = new Date(st.anchor.getFullYear(), st.anchor.getMonth() + dir * Math.max(1, Math.floor(st.range / 2)), 1); render(); };
     document.getElementById('gt-prev').addEventListener('click', () => nav(-1));
     document.getElementById('gt-next').addEventListener('click', () => nav(1));
-    document.getElementById('gt-add').addEventListener('click', () => openForm());
+    document.getElementById('gt-add').addEventListener('click', () => (st.tab === 'habit' ? Habits.openEditor(null) : openForm()));
     document.getElementById('gt-chart').addEventListener('click', async (e) => {
+      if (e.target.closest('.gt-hrow')) { App.showView('habits'); return; }
       const it = e.target.closest('.gt-item'); if (!it) return;
       openForm(await DB.get('plans', it.dataset.id));
     });
@@ -180,5 +227,6 @@
     window.addEventListener('resize', () => { if (document.getElementById('view-gantt').classList.contains('active')) render(); });
   }
 
-  global.Gantt = { init, render, setAnchor: (d) => { st.anchor = d; } };
+  function showHabits() { st.tab = 'habit'; localStorage.setItem('gtTab', 'habit'); App.showView('gantt'); }
+  global.Gantt = { init, render, showHabits, setAnchor: (d) => { st.anchor = d; } };
 })(window);

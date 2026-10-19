@@ -1,7 +1,7 @@
 /* Backup (export/import all stores) + opt-in encrypted inbox pull. No network unless user presses 「今すぐ取得」. */
 (function (global) {
-  const STORES = ['memos', 'reminders', 'plans', 'sessions', 'notebooks', 'nbpages', 'habits', 'habitlogs', 'photos', 'meta'];
-  const BLOB_STORES = ['photos', 'nbpages'];
+  const STORES = ['memos', 'reminders', 'plans', 'sessions', 'notebooks', 'nbpages', 'habits', 'habitlogs', 'collages', 'photos', 'meta'];
+  const BLOB_STORES = ['photos', 'nbpages', 'collages'];
   const SKIP_META = ['inboxPass']; // never export the inbox passphrase
   const keyOf = (store, r) => (store === 'meta' ? r.key : r.id);
   const stamp = (r) => ('updatedAt' in r && !r.updatedAt) ? 0 : Date.parse(r.updatedAt || r.createdAt || r.created || 0) || Number(r.updatedAt || r.created || 0) || 0;

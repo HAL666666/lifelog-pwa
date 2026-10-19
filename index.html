@@ -25,6 +25,11 @@
     <button type="button" class="backup-banner-close" id="backup-banner-close" aria-label="閉じる">×</button>
   </div>
 
+  <div id="collage-banner" class="backup-banner collage-banner" role="status" hidden>
+    <button type="button" class="backup-banner-text" id="collage-banner-go">🧩 昨日のコラージュを作る？</button>
+    <button type="button" class="backup-banner-close" id="collage-banner-close" aria-label="閉じる">×</button>
+  </div>
+
   <main id="main">
     <!-- Calendar View -->
     <section id="view-calendar" class="view active">
@@ -39,6 +44,7 @@
       <div id="cal-weekdays" class="cal-weekdays" aria-hidden="true"></div>
       <div id="cal-grid" class="cal-grid" role="grid"></div>
       <div id="cal-multi" class="cal-multi" hidden></div>
+      <div id="cal-legend" class="cal-legend" aria-label="印の凡例"></div>
       <div class="fab-row">
         <label class="fab" title="写真を追加">
           📷
@@ -58,9 +64,16 @@
         <h2 id="day-label"></h2>
       </div>
       <div class="day-section">
-        <h3>写真</h3>
+        <div class="section-head">
+          <h3>写真</h3>
+          <button type="button" class="btn-sm" id="day-collage-btn">🧩 コラージュ</button>
+        </div>
         <div id="day-photos" class="photo-grid"></div>
         <p id="day-photos-empty" class="empty-hint">写真はありません</p>
+        <div id="day-collages-wrap" hidden>
+          <h3 class="sub">この日のコラージュ</h3>
+          <div id="day-collages" class="cl-grid"></div>
+        </div>
       </div>
       <div class="day-section">
         <div class="section-head">
@@ -138,7 +151,7 @@
 
     <!-- Gantt View -->
     <section id="view-gantt" class="view">
-      <div class="gt-tabs" id="gt-tabs" role="group"><button type="button" data-t="big">大事</button><button type="button" data-t="small">小さな用事</button><button type="button" data-t="all">全部</button></div>
+      <div class="gt-tabs" id="gt-tabs" role="group"><button type="button" data-t="big">大事</button><button type="button" data-t="small">小さな用事</button><button type="button" data-t="all">全部</button><button type="button" data-t="habit">習慣</button></div>
       <div class="gt-nav">
         <button type="button" class="icon-btn" id="gt-prev" aria-label="前へ">‹</button>
         <span id="gt-label"></span>
@@ -147,7 +160,7 @@
       </div>
       <div class="gt-chart" id="gt-chart"></div>
       <p id="gt-empty" class="empty-hint pad" hidden>この期間の予定はありません</p>
-      <p class="help-text pad">太いバー＝大事 / 細いバー＝小さな用事（●＝期限日）。タップで編集。</p>
+      <p class="help-text pad" id="gt-help">太いバー＝大事 / 細いバー＝小さな用事（●＝期限日）。タップで編集。</p>
       <div class="fab-row"><button type="button" class="fab" id="gt-add" title="予定を追加">＋</button></div>
     </section>
 
@@ -155,6 +168,12 @@
       <div id="nb-list-wrap">
         <div class="nb-grid" id="nb-grid"></div>
         <p id="nb-empty" class="empty-hint pad" hidden>ノートがありません。＋で作成</p>
+        <div class="section-head pad cl-head">
+          <h3>🧩 コラージュ</h3>
+          <button type="button" class="btn-sm" id="cl-new">＋ 作る</button>
+        </div>
+        <div id="cl-gallery" class="cl-grid"></div>
+        <p id="cl-gallery-empty" class="empty-hint pad">まだありません。日付を選んで、その日の写真から作れます</p>
         <div class="fab-row"><button type="button" class="fab" id="nb-new" title="ノートを作成">＋</button></div>
       </div>
       <div id="nb-detail" hidden>
@@ -197,9 +216,10 @@
     <section id="view-habits" class="view">
       <div class="section-head pad">
         <h2>今日の習慣 <small id="habit-progress" class="muted"></small></h2>
-        <span><button type="button" class="btn-sm" id="habit-badges">🏆</button> <button type="button" class="btn-sm" id="habit-add">＋ 追加</button></span>
+        <span><button type="button" class="btn-sm" id="habit-gantt" title="ガントで見る">📊</button> <button type="button" class="btn-sm" id="habit-badges">🏆</button> <button type="button" class="btn-sm" id="habit-add">＋ 追加</button></span>
       </div>
       <div class="habit-progress pad"><div id="habit-bar"></div></div>
+      <div id="habit-recent" class="habit-recent pad" hidden></div>
       <ul id="habit-list" class="habit-list pad"></ul>
       <p id="habit-empty" class="empty-hint pad">「＋ 追加」で習慣を作りましょう</p>
       <div id="badge-panel" class="pad" hidden><h3 class="sub">バッジコレクション <small id="badge-count" class="muted"></small></h3><ul id="badge-grid" class="badge-grid"></ul></div>
@@ -212,6 +232,14 @@
         <label class="toggle-row">週の始まり
           <select id="week-start"><option value="0">日曜日</option><option value="1">月曜日</option></select>
         </label>
+      </div>
+      <div class="settings-block">
+        <h3>表示</h3>
+        <label class="toggle-row">
+          <input type="checkbox" id="thumb-overlay" checked>
+          <span>サムネに文字を重ねる</span>
+        </label>
+        <p class="help-text">写真・コラージュ・ノートの表紙に、日付（例：10/19（月））とタイトルを大きく重ねて表示します。オフで写真のみ。</p>
       </div>
       <div class="settings-block">
         <h3>通知</h3>
@@ -246,7 +274,8 @@
       </div>
       <div class="settings-block">
         <h3>受信箱（任意・オンライン）</h3>
-        <p class="help-text">アシスタントが作成した暗号化ファイルから予定・TODOを取り込みます。ボタンを押したときだけ通信します。</p>
+        <p class="help-text">アシスタントが作成した暗号化ファイルから取り込みます。ボタンを押したときだけ通信します。<br>
+          取り込める種類：<b>予定</b>（ガント）・<b>TODO／リマインダー／期限</b>・<b>メモ</b>・<b>習慣</b>（習慣タブに追加）。同じ項目を何度取り込んでも重複しません。</p>
         <label class="toggle-row">URL <input type="url" id="inbox-url" placeholder="https://..." style="flex:1"></label>
         <label class="toggle-row">パスフレーズ <input type="password" id="inbox-pass" autocomplete="off" style="flex:1"></label>
         <button type="button" class="btn-secondary full" id="btn-inbox-pull">今すぐ取得</button>
@@ -333,6 +362,33 @@
 
   <div id="toast" class="toast" hidden></div>
 
+  <!-- Modal: collage -->
+  <dialog id="modal-collage" class="modal-collage">
+    <div id="cl-pane-pick">
+      <h3>コラージュを作る</h3>
+      <div class="plan-row">
+        <label>日付<input type="date" id="cl-date"></label>
+        <label>タイトル（任意）<input type="text" id="cl-title" maxlength="30" placeholder="例：家族で公園"></label>
+      </div>
+      <div class="cl-bar"><span id="cl-count"></span><button type="button" class="btn-text" id="cl-all">全選択／解除</button></div>
+      <div id="cl-pick" class="cl-pick"></div>
+      <p id="cl-empty" class="empty-hint" hidden>この日の写真はありません</p>
+      <div class="dialog-actions">
+        <button type="button" class="btn-secondary" id="cl-cancel">閉じる</button>
+        <button type="button" class="btn-primary" id="cl-make">コラージュを作る</button>
+      </div>
+    </div>
+    <div id="cl-pane-result" hidden>
+      <img id="cl-result-img" class="cl-result" alt="コラージュ">
+      <p id="cl-result-cap" class="help-text"></p>
+      <div class="dialog-actions">
+        <button type="button" class="btn-danger" id="cl-delete">削除</button>
+        <button type="button" class="btn-secondary" id="cl-download">ダウンロード</button>
+        <button type="button" class="btn-primary" id="cl-close">閉じる</button>
+      </div>
+    </div>
+  </dialog>
+
   <dialog id="modal-habit">
     <form id="habit-form" method="dialog">
       <h3>習慣</h3>
@@ -349,6 +405,7 @@
   <script src="js/exif.js"></script>
   <script src="js/db.js"></script>
   <script src="js/photos.js"></script>
+  <script src="js/thumbs.js"></script>
   <script src="js/holidays.js"></script>
   <script src="js/calendar.js"></script>
   <script src="js/gantt.js"></script>
@@ -359,6 +416,7 @@
   <script src="js/habits.js"></script>
   <script src="js/backup.js"></script>
   <script src="js/storage.js"></script>
+  <script src="js/collage.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

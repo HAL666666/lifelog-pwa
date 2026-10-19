@@ -54,7 +54,9 @@
       const ps = pages.filter((p) => p.nb === n.id).sort((a, b) => a.order - b.order);
       const d = document.createElement('button');
       d.type = 'button'; d.className = 'nb-tile';
-      d.innerHTML = `<div class="nb-cover">${ps[0] ? `<img src="${url(ps[0].thumb)}" alt="">` : '<span>📓</span>'}</div><div class="nb-meta"><b>${esc(n.name)}</b><small>${ps.length}枚</small></div>`;
+      const last = ps.reduce((m, p) => Math.max(m, p.created || 0), 0) || n.created;
+      const cap = ps[0] && global.Thumbs ? Thumbs.capHTML(last ? new Date(last) : null, `${n.name} · ${ps.length}枚`) : '';
+      d.innerHTML = `<div class="nb-cover tthumb">${ps[0] ? `<img src="${url(ps[0].thumb)}" alt="">` : '<span>📓</span>'}${cap}</div><div class="nb-meta${cap ? ' has-cap' : ''}"><b>${esc(n.name)}</b><small>${ps.length}枚</small></div>`;
       d.onclick = () => open(n);
       g.appendChild(d);
     }

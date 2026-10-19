@@ -7,6 +7,7 @@ items.json: {"items":[...]} or [...]; each item needs a stable unique "id" (re-s
   {"id":"exam-2026-11","kind":"plan","title":"期末試験","start":"2026-11-20","end":"2026-11-22","type":"big","icon":"📝"}
   {"id":"rep-1","kind":"todo","title":"レポート提出","when":"2026-10-20T17:00:00+09:00"}   (kind todo|reminder|deadline)
   {"id":"m-1","kind":"memo","dateKey":"2026-10-14","text":"..."}
+  {"id":"h-stretch","kind":"habit","name":"ストレッチ","emoji":"🧘","target":5}   (習慣タブに追加; target = 週の目標日数 1-7, 任意)
 Optional per item: updatedAt (ISO) — a newer updatedAt overwrites the earlier copy in the app.
 Requires: pip install cryptography
 """
@@ -23,7 +24,7 @@ def main():
     data = json.load(sys.stdin if src == '-' else open(src, encoding='utf-8'))
     items = data['items'] if isinstance(data, dict) else data
     for it in items:
-        if not it.get('id') or it.get('kind') not in ('plan', 'todo', 'reminder', 'deadline', 'memo'):
+        if not it.get('id') or it.get('kind') not in ('plan', 'todo', 'reminder', 'deadline', 'memo', 'habit'):
             sys.exit(f'bad item: {it}')
     salt, iv = os.urandom(16), os.urandom(12)
     key = PBKDF2HMAC(hashes.SHA256(), 32, salt, ITER).derive(pw.encode())

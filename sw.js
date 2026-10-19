@@ -1,5 +1,5 @@
 /* Lifelog PWA service worker — caches app shell; relative to SW scope */
-const CACHE = 'lifelog-shell-v8';
+const CACHE = 'lifelog-shell-v9';
 const SHELL = [
   './',
   './index.html',
@@ -7,6 +7,7 @@ const SHELL = [
   './js/exif.js',
   './js/db.js',
   './js/photos.js',
+  './js/thumbs.js',
   './js/holidays.js',
   './js/calendar.js',
   './js/gantt.js',
@@ -17,6 +18,7 @@ const SHELL = [
   './js/habits.js',
   './js/backup.js',
   './js/storage.js',
+  './js/collage.js',
   './js/app.js',
   './manifest.json',
   './icons/icon-192.png',

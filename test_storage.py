@@ -45,7 +45,7 @@ async def main():
         await page.click("#backup-banner-close"); await page.reload(); await page.wait_for_timeout(800)
         check("banner_dismiss_snoozes", not await page.is_visible("#backup-banner"))
         check("existing_pref_kept", await page.evaluate("localStorage.getItem('weekStart')") == "1")
-        check("db_version_unchanged", await page.evaluate("new Promise(r=>{const q=indexedDB.open('lifelog-db');q.onsuccess=()=>{r(q.result.version);q.result.close()}})") == 5)
+        check("db_version_current", await page.evaluate("new Promise(r=>{const q=indexedDB.open('lifelog-db');q.onsuccess=()=>{r(q.result.version);q.result.close()}})") == 6)
         check("no_page_errors", not errs, errs)
         await b.close()
     print("ALL OK" if ok else "FAILED"); return 0 if ok else 1
